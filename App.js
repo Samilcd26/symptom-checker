@@ -8,6 +8,8 @@ import AddSymptom from "./src/symptoms/AddSymptom";
 import { COLORS } from "./src/components/Colors";
 import { Provider } from "react-redux";
 import { store } from "./src/redux/configureStore";
+import ResultScreen from "./src/result/ResultScreen";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -29,9 +31,9 @@ export default function App() {
   return (
     <Provider store={store}>
 
-    <View onLayout={onLayoutRootView} >
-      <AddSymptom />
-    </View>
+    <SafeAreaView onLayout={onLayoutRootView} >
+      <ResultScreen />
+    </SafeAreaView>
     </Provider>
   );
 }

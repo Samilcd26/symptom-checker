@@ -16,17 +16,18 @@ import { COLORS } from "../components/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewItem, removeItem } from "../redux/promptSlice";
+import { addNewPrompt, removePrompt, updateSelectedPrompt } from "../redux/promptSlice";
 import type { PromptState } from '../redux/promptSlice'
-import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 import Popup from "../components/popup";
-import IButton from "../components/IButton";
 
 
 const AddSymptom = () => {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState("");
   const [updateText, setUpdateText] = useState("");
+  const [updateLateText, setLateUpdateText] = useState("");
+  const [updateTextId, setUpdateId] = useState(-5);
+
 
   const dispatch = useDispatch()
 
@@ -39,16 +40,17 @@ const AddSymptom = () => {
 
   const addItem = () => {
     if (text != "" && text.length >= 3) {
-      dispatch(addNewItem(text))
+      dispatch(addNewPrompt(text))
       setText("")
     }
   };
 
-  const updateItem = () => {
-    if (text != "" && text.length >= 3) {
-      console.log("sadsadsd")
-      //dispatch(addNewItem(text))
+  const updatePrompt = () => {
+    if (updateText != "" && updateText.length >= 3 && updateText != text) {
+      dispatch(updateSelectedPrompt([updateTextId, updateText]))
       setUpdateText("")
+      setVisible(false)
+      //TODO: Değişilik yok uyarısı ver
     }
   };
 
@@ -94,7 +96,7 @@ const AddSymptom = () => {
         <View style={styles.promptContainer}>
           {
             promptsList.map((prompt) => {
-              return <PromptText setVisible={setVisible} key={prompt.id} text={prompt.input} id={prompt.id} subDispatch={dispatch} />
+              return <PromptText setUpdateId={setUpdateId} setLateUpdateText={setLateUpdateText} setVisible={setVisible} key={prompt.id} text={prompt.input} id={prompt.id} subDispatch={dispatch} />
             })
           }
         </View>
@@ -113,37 +115,45 @@ const AddSymptom = () => {
                 style={styles.popupInput}
                 onChangeText={(newText) => setUpdateText(newText)}
                 ref={updateInputRef}
-                defaultValue={updateText}
+                defaultValue={updateLateText}
                 clearButtonMode="while-editing"
-                keyboardType="default"
-                returnKeyType="next"
+                keyboardType="url"
                 autoFocus={true}
                 blurOnSubmit={false}
-                value={updateText}
                 onSubmitEditing={() => {
                   updateInputRef.current.clear()
-                  updateItem();
+                  updatePrompt();
                 }}
-                />
+              />
             </View>
             <View style={styles.popupButtonGroup}>
-              <IButton onPress={updateItem()}  />
+              <Pressable style={styles.button} onPress={() => { updatePrompt() }} >
+                <Text style={styles.text}>Save</Text>
+              </Pressable>
             </View>
           </View>
         </Popup>
+
+        <View style={styles.floatingButtonContainer}>
+          <Pressable style={styles.actionButton}  >
+            <Text style={styles.text}>Next</Text>
+            <AntDesign name="right" size={24} color='white' />
+          </Pressable>
+        </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };
 
-const PromptText = ({ text, id, subDispatch, setVisible }) => {
+const PromptText = ({ text, id, subDispatch, setVisible, setLateUpdateText, setUpdateId }) => {
   const removeItemFromList = () => {
-    subDispatch(removeItem(id))
+    subDispatch(removePrompt(id))
   };
 
   const updateItem = () => {
+    setLateUpdateText(text)
+    setUpdateId(id)
     setVisible(true)
-
   };
   return (
     <TouchableWithoutFeedback onLongPress={updateItem}>
@@ -224,8 +234,8 @@ const styles = StyleSheet.create({
   popupInput: {
     color: COLORS.white,
     height: '100%',
-    padding:10,
-    textAlignVertical:'top'
+    padding: 10,
+    textAlignVertical: 'top'
 
   },
   popupButtonGroup: {
@@ -233,5 +243,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
   },
 
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: COLORS.black,
+    borderWidth: 2,
+    borderColor: COLORS.primalGrey
+  },
 
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: COLORS.white,
+
+  },
+  floatingButtonContainer: {
+    height: 60,
+    width: 90,
+    position: 'absolute',
+    right: 40,
+    bottom: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.primalGrey
+  },
+  actionButton: {
+    flexDirection: 'row',
+    gap: 5,
+
+  },
 });
