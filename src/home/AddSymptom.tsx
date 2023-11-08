@@ -12,13 +12,14 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS } from "../components/Colors";
+
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewPrompt, removePrompt, updateSelectedPrompt } from "../redux/promptSlice";
 import type { PromptState } from '../redux/promptSlice'
 import Popup from "../components/popup";
+import { COLORS } from "../settings/Colors";
 
 
 const AddSymptom = () => {

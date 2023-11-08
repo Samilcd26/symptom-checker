@@ -2,42 +2,71 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
 
-import ChoosePerson from "./src/home/ChoosePerson";
-import { View } from "react-native";
-import AddSymptom from "./src/symptoms/AddSymptom";
-import { COLORS } from "./src/components/Colors";
 import { Provider } from "react-redux";
 import { store } from "./src/redux/configureStore";
-import ResultScreen from "./src/result/ResultScreen";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import { navigationRef } from "./src/navigation/RootNavigation";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-SplashScreen.preventAutoHideAsync();
-export default function App() {
-  const [fontsLoaded] = useFonts({
-    "person-service": require("./assets/fonts/Personal-Services.ttf"),
-    azonix: require("./assets/fonts/Azonix.otf"),
-  });
+import HomeScreen from "./src/home/HomeScreen";
+import { View, Text } from "react-native";
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+//SplashScreen.preventAutoHideAsync();
 
-  if (!fontsLoaded) {
-    return null;
-  }
+const Tab = createStackNavigator();
+
+
+function App() {
+  // const [fontsLoaded] = useFonts({
+  //   "person-service": require("./assets/fonts/Personal-Services.ttf"),
+  //   azonix: require("./assets/fonts/Azonix.otf"),
+  // });
+
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
+
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   return (
-    <Provider store={store}>
-
-    <SafeAreaView onLayout={onLayoutRootView} >
-      <ResultScreen />
-    </SafeAreaView>
-    </Provider>
+    <NavigationContainer ref={navigationRef}>
+      <Tab.Navigator>
+        <Tab.Screen
+          options={{ headerShown: false }}
+          name="Home"
+          component={HomeStack}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
+
+
+
+
+const StackHome = createStackNavigator();
+
+function HomeStack() {
+  return (
+    <StackHome.Navigator initialRouteName="HomeScreen">
+      <StackHome.Screen
+        options={{ headerShown: false }}
+        name="HomeScreen"
+        component={HomeScreen}
+      />
+    </StackHome.Navigator>
+  );
+}
+
+
+
+export default App;
 /*
 <View onLayout={onLayoutRootView}>
           <HomeScreen />

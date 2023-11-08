@@ -1,25 +1,63 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import React from "react";
-import IButton from "../components/IButton"
-import { COLORS } from "../components/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+
+import { AntDesign } from "@expo/vector-icons";
+import * as RootNavigation from "../navigation/RootNavigation";
+import TypeSelect from "./TypeSelect";
+
+import { DISPLAY } from "../settings/Display";
+import { COLORS } from "../settings/Colors";
+import GenderAndAgeSelect from "./GenderAndAgeSelect";
+
+
+
+
+
+let ComponentWith=DISPLAY.Width*3
+let index=1
+
+const nextStep = () => {
+  RootNavigation.navigate("CompanyScreen");
+};
+
+const handlePress = (evt) => {
+  index++
+  this.myScroll.scrollTo({ x: 0, y: DISPLAY.Width*index, animated: true });
+ 
+};
 
 const HomeScreen = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.introContainer}>
-        <View style={styles.intro}>
-          <Text style={styles.title}>Welcome</Text>
-          <Text style={styles.text}>
-            Irure nisi pariatur ullamco reprehenderit sint exercitation ullamco
-            non deserunt amet. Voluptate pariatur laboris quis culpa eiusmod
-            tempor adipisicing occaecat cupidatat et commodo reprehenderit
-            occaecat officia. Sunt anim nulla non repreh
-          </Text>
-          <Text style={styles.warning}>Welcome</Text>
-        </View>
-
-        <View style={styles.startButtonContainer}>
-          <IButton />
+    <SafeAreaView style={{ backgroundColor: COLORS.black, height: "100%" }}>
+      <ScrollView
+         horizontal
+         pagingEnabled
+        ref={(ref) => {
+          this.myScroll = ref;
+        }}
+      >
+        <TypeSelect />
+        <GenderAndAgeSelect />
+      </ScrollView>
+      <View style={styles.actionButtonContainer}>
+        <View style={styles.actionButtonBorder}>
+          <Pressable
+            style={styles.actionButton}
+            onPress={(e) => {
+              handlePress(e);
+            }}
+          >
+            <AntDesign name="right" size={24} color="white" />
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>
@@ -30,40 +68,32 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.black,
-    height: "100%",
-    width: "100%",
+    justifyContent: "center",
+    height: "80%",
+    width: ComponentWith,
   },
-  introContainer: {
-    height: "70%",
-    width: "100%",
+  centerContainer: {
+    marginHorizontal: DISPLAY.Width * 0.2,
+    flexDirection: "row",
+    width: DISPLAY.Width * 0.6,
+    flexWrap: "wrap",
   },
-  intro: {
-    flex: 1,
+
+  actionButtonContainer: {
+    alignItems: "center",
+  },
+  actionButton: {
+    borderWidth: 1,
+    borderColor: COLORS.primalGrey,
+    padding: 20,
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 20,
   },
-  title: {
-    fontSize: 50,
-    //fontFamily: "azonix",
-    color: COLORS.white,
+  actionButtonBorder: {
+    borderWidth: 2,
+    borderColor: "red",
+    borderRadius: 50,
   },
-  text: {
-    marginTop: 20,
-    color: COLORS.white,
-    fontSize: 15,
-    textAlign: "center",
-    //fontFamily: "azonix",
-  },
-  warning: {
-    marginTop: 20,
-    color: COLORS.red,
-    fontSize: 15,
-    textAlign: "center",
-    //fontFamily: "azonix",
-  },
-  startButtonContainer: {
-    bottom: 0,
-  },
+  actionButtonText: {},
 });
